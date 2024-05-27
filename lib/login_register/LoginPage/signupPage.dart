@@ -45,7 +45,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: Column(
                         children: <Widget>[
                           TextField(
-                            cursorColor: Colors.purpleAccent,
+                            cursorColor: Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(
                                 color: Color.fromRGBO(143, 148, 251, 1)),
                             decoration: InputDecoration(
@@ -55,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           TextField(
-                            cursorColor: Colors.purpleAccent,
+                            cursorColor: Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(
                                 color: Color.fromRGBO(143, 148, 251, 1)),
                             decoration: InputDecoration(
@@ -66,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextField(
                             keyboardType: TextInputType.emailAddress,
-                            cursorColor: Colors.purpleAccent,
+                            cursorColor: Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(
                                 color: Color.fromRGBO(143, 148, 251, 1)),
                             decoration: InputDecoration(
@@ -77,7 +77,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextField(
                             keyboardType: TextInputType.phone,
-                            cursorColor: Colors.purpleAccent,
+                            cursorColor: Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(
                                 color: Color.fromRGBO(143, 148, 251, 1)),
                             decoration: InputDecoration(

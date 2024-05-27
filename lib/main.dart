@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fp_golekost/login_register/LoginPage/loginPage.dart';
-import 'package:fp_golekost/profile/ProfilePage.dart';
+
 
 void main() {
   runApp(const MyApp());
