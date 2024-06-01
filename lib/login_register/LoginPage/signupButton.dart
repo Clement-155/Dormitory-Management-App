@@ -8,23 +8,23 @@ class SignupButton extends StatelessWidget {
     return FadeAnimation(
       0.5,
       Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromRGBO(143, 148, 251, 1),
+              Color.fromRGBO(143, 148, 251, .6),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(100.0),
+        ),
         height: 50,
         width: 100,
         child: ElevatedButton(
-
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
           onPressed: () {},
 
-          child: Ink(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(143, 148, 251, 1),
-                  Color.fromRGBO(143, 148, 251, .6),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            child: Center(
+          child:
+            Center(
               child: Text(
                 "SignUp",
                 style: TextStyle(
@@ -33,7 +33,6 @@ class SignupButton extends StatelessWidget {
                 ),
               ),
             ),
-          ),
         ),
       ),
     );

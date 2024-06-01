@@ -21,7 +21,7 @@ class _PasswordFieldState extends State<PasswordField> {
     return Container(
       child: TextField(
         obscureText: _ishidden ? true : false,
-        style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),
+        style: TextStyle(color: Colors.black),
         decoration: InputDecoration(
           suffixIcon: IconButton(
             icon: Icon(_ishidden ? Icons.visibility_off : Icons.visibility),

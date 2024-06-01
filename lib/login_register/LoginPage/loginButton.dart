@@ -8,22 +8,22 @@ class LoginButton extends StatelessWidget {
     return FadeAnimation(
       0.5,
       Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromRGBO(143, 148, 251, 1),
+              Color.fromRGBO(143, 148, 251, .6),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(30.0),
+        ),
         height: 50,
         width: 100,
         child: Padding(
           padding: const EdgeInsets.all(0),
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
             onPressed: () {},
-            child: Ink(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(143, 148, 251, 1),
-                    Color.fromRGBO(143, 148, 251, .6),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(30.0),
-              ),
               child: Center(
                 child: Text(
                   "Login",
@@ -33,7 +33,7 @@ class LoginButton extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+
           ),
         ),
       ),

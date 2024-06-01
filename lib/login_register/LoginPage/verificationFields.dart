@@ -34,10 +34,10 @@ class VerificationFields extends StatelessWidget {
               ),
               child: TextField(
                 cursorColor: Colors.purpleAccent,
-                style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Email or Phone number",
+                  hintText: "Email",
                   hintStyle: TextStyle(color: Colors.grey[400]),
                 ),
               ),

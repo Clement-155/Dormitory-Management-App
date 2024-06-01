@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fp_golekost/navigation/nav_drawer.dart';
 import './verificationFields.dart';
 import './loginButton.dart';
 import './signupPage.dart';
 import './loginDecoration.dart';
 import '../Animation/FadeAnimation.dart';
-
+import '../../service/payment_service.dart';
+//TODO : Switch to signup
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -24,8 +26,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    PaymentService service = PaymentService();
+
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Navigation Drawer',
+        ),
+        backgroundColor: const Color(0xff764abc),
+      ),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
@@ -38,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: <Widget>[
                     TextButton(
                       style: TextButton.styleFrom(
-                        foregroundColor : _pageLogin
+                        backgroundColor : _pageLogin
                             ? Color.fromRGBO(143, 148, 251, 1)
                             : Colors.transparent,
                       ),
@@ -57,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextButton(
                       style: TextButton.styleFrom(
-                        foregroundColor : _pageLogin
+                        backgroundColor : !_pageLogin
                             ? Color.fromRGBO(143, 148, 251, 1)
                             : Colors.transparent,
                       ),
@@ -147,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+      drawer: NavDrawer(),
     );
   }
 }
