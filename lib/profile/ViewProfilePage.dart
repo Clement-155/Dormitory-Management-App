@@ -26,6 +26,9 @@ class ViewProfilePage extends StatelessWidget {
     3: "Telat membayar"
   };
 
+
+
+
   ViewProfilePage({Key? key}) : super(key: key);
 
   @override

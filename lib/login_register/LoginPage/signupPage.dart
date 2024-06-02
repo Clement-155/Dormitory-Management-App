@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fp_golekost/service/user_service.dart';
 
-//TODO Switch to login
+
 class SignupPage extends StatefulWidget {
   @override
 
@@ -202,6 +202,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextField(
                             controller: namaController,
+                              keyboardType: TextInputType.name,
                             cursorColor:
                                 Theme.of(context).colorScheme.onPrimary,
                             style: TextStyle(color: Colors.black),
@@ -211,7 +212,7 @@ class _SignupPageState extends State<SignupPage> {
                               hintStyle: TextStyle(color: Colors.grey[400]),
                             ),
                           ),
-                          //TODO : Field tanggal lahir dan dropdown jenis kelamin
+
 
                           TextField(
                               style: TextStyle(color: Colors.black),
@@ -232,7 +233,7 @@ class _SignupPageState extends State<SignupPage> {
                             autovalidateMode: AutovalidateMode.always,
                             dropdownColor: Colors.white70,
                             style: TextStyle(color: Colors.black),
-                            hint: const Text("Pilih jenis kelamin"),
+                            hint: const Text("Pilih jenis kelamin (KTP)"),
                             items: widget.genderList,
                             onChanged: (int? value) {
                               selectedGender = value;

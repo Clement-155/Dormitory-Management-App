@@ -24,12 +24,12 @@ class UserService {
   }
 
   // UPDATE
-  Future<void> updateNote(String docID, UserModel user){
+  Future<void> updateUser(String docID, UserModel user){
     return users.doc(docID).update(user.mapModel());
   }
 
   // DELETE
-  Future<void> deleteNote(String docID){
+  Future<void> deleteUser(String docID){
     return users.doc(docID).delete();
   }
 }
