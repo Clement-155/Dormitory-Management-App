@@ -73,7 +73,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     //TODO : Implementasi sanitazion dan validation pakai package khusus (sanitizationChain & validationChain)
     print(oldUser.no_hp.length );
     // If password confirmation failed
-    if (hpController.text.length < 10 &&
+    if (hpController.text.length < 10 && hpController.text.length > 12 &&
         !(hpController.text.isEmpty && oldUser.no_hp.length > 9)) {
       Navigator.pop(context);
       genericErrorMessage("Invalid phone number!");
@@ -114,6 +114,34 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         print(e);
       }
     }
+  }
+
+  Future<void> deleteUser() async{
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              "Are you sure",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () {Navigator.pop(context);}, child: Text("No, i changed my mind.")),
+            TextButton(onPressed: () async {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              await widget.user.delete();
+              FirebaseAuth.instance.signOut();
+              UserService().deleteUser(id!);
+              genericErrorMessage("User deleted");
+            }, child: Text("Yes."))
+          ],
+        );
+      },
+    );
   }
 
   void genericErrorMessage(String msg) {
@@ -394,7 +422,16 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
               ),
               const SizedBox(height: tFormHeight),
-
+              ElevatedButton(
+                onPressed: () {deleteUser();},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent.withOpacity(0.1),
+                    elevation: 0,
+                    foregroundColor: Colors.red,
+                    shape: const StadiumBorder(),
+                    side: BorderSide.none),
+                child: const Text("Delete User Account"),
+              ),
             ],
           )
 

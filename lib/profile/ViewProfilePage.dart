@@ -26,9 +26,6 @@ class ViewProfilePage extends StatelessWidget {
     3: "Telat membayar"
   };
 
-
-
-
   ViewProfilePage({Key? key}) : super(key: key);
 
   @override
@@ -170,32 +167,8 @@ class ViewProfilePage extends StatelessWidget {
                     const SizedBox(height: tFormHeight),
 
                     // -- Created Date and Delete Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text.rich(
-                          TextSpan(
-                            text: placeholderText,
-                            style: TextStyle(fontSize: 12),
-                            children: [
-                              TextSpan(
-                                  text: "Date",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent.withOpacity(0.1),
-                              elevation: 0,
-                              foregroundColor: Colors.red,
-                              shape: const StadiumBorder(),
-                              side: BorderSide.none),
-                          child: const Text("Delete"),
-                        ),
-                      ],
-                    )
+
+
                   ],
                 ),
 
