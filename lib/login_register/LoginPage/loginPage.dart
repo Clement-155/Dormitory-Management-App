@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       // Pop loading indicator if success
       Navigator.pop(context);
+      print("HELLO");
     } on FirebaseAuthException catch (e) {
       // Pop loading indicator before displaying error
       Navigator.pop(context);

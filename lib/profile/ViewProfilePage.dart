@@ -1,17 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fp_golekost/model/user_model.dart';
 import 'package:fp_golekost/service/user_service.dart';
 
 class ViewProfilePage extends StatelessWidget {
+  final Stream<QuerySnapshot>  userData;
+  Map<int, String> jenis_kelamin = {
+    0: "Laki-laki",
+    1: "Perempuan",
+    2: "Tidak ingin menyebutkan"
+  };
+  Map<int, String> role = {
+    0: "Penghuni",
+    1: "Pemilik",
+    2: "Debug"
+  };
+  Map<int, String> status = {
+    -1: "Pemilik",
+    0: "Bukan anggota kost",
+    1: "Belum bayar",
+    2: "Sudah bayar",
+    3: "Telat bayar"
+  };
 
-
-  const ViewProfilePage({Key? key}) : super(key: key);
+  ViewProfilePage({Key? key, required this.userData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Get user data
-    //TODO : Get email from current logged in user
-    final userData = UserService().getUser('test@test.com');
+
 
     const placeholderText = "Placeholder";
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
@@ -29,7 +46,7 @@ class ViewProfilePage extends StatelessWidget {
               // -- IMAGE with ICON
               Stack(
                 children: [
-
+                    //TODO : Allow user to upload profile picture/link for profile picture
                     SizedBox(
                     width: 120,
                     height: 120,
@@ -80,6 +97,7 @@ class ViewProfilePage extends StatelessWidget {
                                   label: Text(data['no_hp']), prefixIcon: Icon(Icons.phone)),
                             ),
                             const SizedBox(height: tFormHeight - 20),
+
                             // TextField(
                             //   obscureText: true,
                             //   decoration: InputDecoration(
@@ -104,7 +122,7 @@ class ViewProfilePage extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                          builder: (BuildContext context) => const ViewProfilePage())),
+                          builder: (BuildContext context) => ViewProfilePage(userData: userData))),
                         style: ElevatedButton.styleFrom(
                             backgroundColor: tPrimaryColor,
                             side: BorderSide.none,

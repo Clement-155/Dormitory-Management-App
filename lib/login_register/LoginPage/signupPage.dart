@@ -1,15 +1,15 @@
-import 'passwordField.dart';
+import 'package:fp_golekost/model/user_model.dart';
+
 import 'package:flutter/material.dart';
-import 'signupButton.dart';
 import '../Animation/FadeAnimation.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fp_golekost/service/user_service.dart';
 
 //TODO Switch to login
 class SignupPage extends StatefulWidget {
   @override
-  late DateTime selectedDate = DateTime.now();
-  int? selectedGender = 0;
+
 
   List<DropdownMenuItem<int>> get genderList {
     List<DropdownMenuItem<int>> menuItems = [
@@ -20,10 +20,22 @@ class SignupPage extends StatefulWidget {
     return menuItems;
   }
 
+  List<DropdownMenuItem<int>> get roleList {
+    List<DropdownMenuItem<int>> menuItems = [
+      DropdownMenuItem(child: Text("Penghuni Kost"), value: 0),
+      DropdownMenuItem(child: Text("Pemilik Kost"), value: 1),
+    ];
+    return menuItems;
+  }
+
+
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
+  late DateTime selectedDate = DateTime(1900);
+  int? selectedGender = 0;
+  int? selectedRole = 0;
   // text editing controllers
   final emailController = TextEditingController();
   final namaController = TextEditingController();
@@ -55,9 +67,9 @@ class _SignupPageState extends State<SignupPage> {
         });
 
     if (newSelectedDate != null) {
-      widget.selectedDate = newSelectedDate;
+      selectedDate = newSelectedDate;
       dateController
-        ..text = DateFormat.yMMMd().format(widget.selectedDate)
+        ..text = DateFormat.yMMMd().format(selectedDate)
         ..selection = TextSelection.fromPosition(TextPosition(
             offset: dateController.text.length,
             affinity: TextAffinity.upstream));
@@ -88,6 +100,7 @@ class _SignupPageState extends State<SignupPage> {
     else {
       // Sign in validation
       try {
+        //TODO : Figure out how to handle both auth and database exception so firebaseauth account is deleted if user data encounters exception
         final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
@@ -95,6 +108,10 @@ class _SignupPageState extends State<SignupPage> {
         );
         // Pop loading indicator if success
         Navigator.pop(context);
+        // If sign up succeed, create new user entry
+        UserModel newUser = UserModel(emailController.text, namaController.text, selectedDate.toString(), selectedGender ?? 2, "Isi nomor HP", DateTime(1900).toString(), selectedRole ?? 0, 0);
+        UserService().addUser(newUser);
+      
       } on FirebaseAuthException catch (e) {
         // Pop loading indicator before displaying error
         Navigator.pop(context);
@@ -169,7 +186,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                       child: Column(
-                        //Email, Nama, Tanggal Lahir, Jenis Kelamin, Password + Confirm
+                        //Email, Nama, Tanggal Lahir, Jenis Kelamin, Role, Password + Confirm
                         children: <Widget>[
                           TextField(
                             controller: emailController,
@@ -218,7 +235,24 @@ class _SignupPageState extends State<SignupPage> {
                             hint: const Text("Pilih jenis kelamin"),
                             items: widget.genderList,
                             onChanged: (int? value) {
-                              widget.selectedGender = value;
+                              selectedGender = value;
+                              setState(() {});
+                            },
+                            value: 0,
+                            validator: (int? value) {
+                              return value == null
+                                  ? "Pilih jenis kelamin"
+                                  : null;
+                            },
+                          ),
+                          DropdownButtonFormField(
+                            autovalidateMode: AutovalidateMode.always,
+                            dropdownColor: Colors.white70,
+                            style: TextStyle(color: Colors.black),
+                            hint: const Text("Apakah anda penghuni atau pemilik kost?"),
+                            items: widget.roleList,
+                            onChanged: (int? value) {
+                              selectedRole = value;
                               setState(() {});
                             },
                             value: 0,

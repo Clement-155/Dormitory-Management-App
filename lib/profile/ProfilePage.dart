@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_golekost/profile/UpdateProfilePage.dart';
+import 'package:fp_golekost/service/user_service.dart';
 import 'ProfileMenu.dart';
+import 'ViewProfilePage.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -13,10 +16,13 @@ class ProfilePage extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    const tProfile = "Profile";
-    const tProfileHeading = "ProfileH";
-    const tProfileSubHeading = "ProfileSH";
-    const tEditProfile = "Edit Profile";
+    String tProfile = "Profile";
+    String tProfileHeading = "ProfileH";
+    String tProfileSubHeading = "ProfileSH";
+    const String tViewProfile = "View Profile";
+    final userData = UserService().getUser(user.email!);
+
+
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
     const tDefaultSize = 10.0;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
@@ -48,18 +54,33 @@ class ProfilePage extends StatelessWidget {
                       width: 35,
                       height: 35,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: tPrimaryColor),
-                      child: const Icon(
-                        Icons.edit,
-                        color: Colors.black,
-                        size: 20,
+                      child: IconButton(
+                        icon: Icon(Icons.edit, color: Colors.black, size: 20),
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute (
+                            builder: (BuildContext context) => UpdateProfilePage()))
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              Text(tProfileHeading, style: Theme.of(context).textTheme.headlineLarge),
-              Text(tProfileSubHeading, style: Theme.of(context).textTheme.bodyMedium),
+            StreamBuilder<QuerySnapshot>(stream: userData,
+                builder: (context, snapshot) {
+                  // if has data, get all documents from collection
+                  if (snapshot.hasData) {
+                    Map<String, dynamic> data = snapshot.data!.docs[0].data() as Map<
+                        String,
+                        dynamic>;
+                    return Column(children: [
+                    Text(data['nama'] ?? tProfileHeading, style: Theme.of(context).textTheme.headlineLarge),
+                  Text(data['email'] ?? tProfileSubHeading, style: Theme.of(context).textTheme.bodyMedium),
+                  ]);
+                  }
+            else {
+                    return const Text("Error retrieving data!");
+                  }
+            }),
+
               const SizedBox(height: 20),
 
               /// -- BUTTON
@@ -67,10 +88,10 @@ class ProfilePage extends StatelessWidget {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                      builder: (BuildContext context) => UpdateProfilePage())),
+                      builder: (BuildContext context) => ViewProfilePage(userData: userData,))),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColor, side: BorderSide.none, shape: const StadiumBorder()),
-                  child: const Text(tEditProfile, style: TextStyle(color: Colors.black)),
+                  child: const Text(tViewProfile, style: TextStyle(color: Colors.black)),
                 ),
               ),
               const SizedBox(height: 30),

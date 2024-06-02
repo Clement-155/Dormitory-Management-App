@@ -4,11 +4,11 @@ class UserModel {
   final String email;
   final String nama;
   final String tanggal_lahir;
-  final Int jenis_kelamin; //0 = Laki2, 1 = Perempuan, 2 = Others
+  final int jenis_kelamin; //0 = Laki2, 1 = Perempuan, 2 = Tidak ingin menyebutkan
   final String no_hp;
   final String tanggal_masuk_kost; // Update saat join kost, default = '1925-01-01 00-00:00.000'
-  final Int role; //0 = Penghuni atau 1 = pemilik. Dibuat int seandainya butuh role lain
-  final Int status; //-1 = pemilik, 0 = Bukan anggota kost, 1 = belum bayar, 2 = sudah bayar, 3 = telat bayar
+  final int role; //0 = Penghuni atau 1 = pemilik. Dibuat int seandainya butuh role lain
+  final int status; //-1 = pemilik, 0 = Bukan anggota kost, 1 = belum bayar, 2 = sudah bayar, 3 = telat bayar
 
 
   const UserModel(this.email, this.nama, this.tanggal_lahir, this.jenis_kelamin, this.no_hp, this.tanggal_masuk_kost, this.role, this.status);
