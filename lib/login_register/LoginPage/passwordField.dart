@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fp_golekost/login_register/Animation/FadeAnimation.dart';
 
 class PasswordField extends StatefulWidget {
+  final TextEditingController passwordController;
+
+  const PasswordField({super.key, required this.passwordController});
   @override
   _PasswordFieldState createState() => _PasswordFieldState();
 }
@@ -18,8 +22,10 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: TextField(
+    return FadeAnimation(
+      0.5,
+      TextField(
+        controller: widget.passwordController,
         obscureText: _ishidden ? true : false,
         style: TextStyle(color: Colors.black),
         decoration: InputDecoration(

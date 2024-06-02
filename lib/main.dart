@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fp_golekost/login_register/LoginPage/auth_page.dart';
 import 'package:fp_golekost/login_register/LoginPage/loginPage.dart';
 import 'package:fp_golekost/login_register/LoginPage/signupPage.dart';
 import 'package:fp_golekost/profile/ViewProfilePage.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         // ···
         brightness: Brightness.dark,
         )),
-      home: LoginPage(),
+      home: AuthPage(),
     );
   }
 }

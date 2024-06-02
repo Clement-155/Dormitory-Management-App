@@ -10,14 +10,16 @@ class SignupPage extends StatefulWidget {
   @override
   late DateTime selectedDate = DateTime.now();
   int? selectedGender = 0;
-  List<DropdownMenuItem<int>> get genderList{
+
+  List<DropdownMenuItem<int>> get genderList {
     List<DropdownMenuItem<int>> menuItems = [
-      DropdownMenuItem(child: Text("Laki-laki"),value: 0),
-      DropdownMenuItem(child: Text("Perempuan"),value: 1),
-      DropdownMenuItem(child: Text("Tidak ingin menyebutkan"),value: 2),
+      DropdownMenuItem(child: Text("Laki-laki"), value: 0),
+      DropdownMenuItem(child: Text("Perempuan"), value: 1),
+      DropdownMenuItem(child: Text("Tidak ingin menyebutkan"), value: 2),
     ];
     return menuItems;
   }
+
   _SignupPageState createState() => _SignupPageState();
 }
 
@@ -32,9 +34,11 @@ class _SignupPageState extends State<SignupPage> {
   _selectDate(BuildContext context) async {
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
-        initialDate: widget.selectedDate != null ? widget.selectedDate : DateTime.now(),
+        // Umur minimal 18 tahun
+        initialDate:
+            DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day),
         firstDate: DateTime(1930),
-        lastDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day),
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.dark().copyWith(
@@ -58,6 +62,77 @@ class _SignupPageState extends State<SignupPage> {
             offset: dateController.text.length,
             affinity: TextAffinity.upstream));
     }
+  }
+
+  Future<void> signUserUp() async {
+    // Loading Indicator
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    //TODO : Implementasi sanitazion dan validation pakai package khusus (sanitizationChain & validationChain)
+    // If password confirmation failed
+    if (passwordController.text != passwordConfirmController.text) {
+      Navigator.pop(context);
+      genericErrorMessage("Confirmation didn't match the password!");
+    }
+    else if (namaController.text == ""){
+      Navigator.pop(context);
+      genericErrorMessage("Please fill the name field!");
+    }
+    //TODO : Validation untuk tanggal dan gender, walau user tidak bisa pilih selain pilihan, mungkin bisa jadi vulnerability
+    else {
+      // Sign in validation
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        // Pop loading indicator if success
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e) {
+        // Pop loading indicator before displaying error
+        Navigator.pop(context);
+
+        switch (e.code) {
+          case 'weak-password':
+            genericErrorMessage("The password provided is too weak!");
+          case 'email-already-in-use':
+            genericErrorMessage("The account already exists for that email!");
+          case 'invalid-email':
+            genericErrorMessage("Invalid email!");
+          default:
+            print(e.code);
+            genericErrorMessage("Unknown error occurred!");
+        }
+      }
+      // If another type of error
+      catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  void genericErrorMessage(String msg) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              msg,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -97,10 +172,11 @@ class _SignupPageState extends State<SignupPage> {
                         //Email, Nama, Tanggal Lahir, Jenis Kelamin, Password + Confirm
                         children: <Widget>[
                           TextField(
+                            controller: emailController,
                             keyboardType: TextInputType.emailAddress,
-                            cursorColor: Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Colors.black),
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Email",
@@ -108,9 +184,10 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           TextField(
-                            cursorColor: Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Colors.black),
+                            controller: namaController,
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Nama Lengkap",
@@ -120,41 +197,45 @@ class _SignupPageState extends State<SignupPage> {
                           //TODO : Field tanggal lahir dan dropdown jenis kelamin
 
                           TextField(
-                              style: TextStyle(
-                                  color: Colors.black),
-                            focusNode: AlwaysDisabledFocusNode(),
-                              controller: dateController, //editing controller of this TextField
+                              style: TextStyle(color: Colors.black),
+                              focusNode: AlwaysDisabledFocusNode(),
+                              controller: dateController,
+                              //editing controller of this TextField
                               decoration: const InputDecoration(
-                                  icon: Icon(Icons.calendar_today), //icon of text field
+                                  icon: Icon(Icons.calendar_today),
+                                  //icon of text field
                                   labelText: "Enter Date" //label text of field
-                              ),
-                              readOnly: true,  // when true user cannot edit text
+                                  ),
+                              readOnly: true,
+                              // when true user cannot edit text
                               onTap: () async {
                                 _selectDate(context);
-                              }
-                          ),
+                              }),
                           DropdownButtonFormField(
-
                             autovalidateMode: AutovalidateMode.always,
-                            style: TextStyle(
-                                color: Colors.black),
-                              hint: const Text("Pilih jenis kelamin"),
-                              items: widget.genderList,
-                              onChanged: (int? value) {
-                                widget.selectedGender = value;
-                                setState(() {});
-                              },
+                            dropdownColor: Colors.white70,
+                            style: TextStyle(color: Colors.black),
+                            hint: const Text("Pilih jenis kelamin"),
+                            items: widget.genderList,
+                            onChanged: (int? value) {
+                              widget.selectedGender = value;
+                              setState(() {});
+                            },
+                            value: 0,
                             validator: (int? value) {
-                              return value == null ? "Pilih jenis kelamin" : null;
-                            },)
-                          ,
+                              return value == null
+                                  ? "Pilih jenis kelamin"
+                                  : null;
+                            },
+                          ),
                           TextField(
+                            controller: passwordController,
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            cursorColor: Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Colors.black),
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Password",
@@ -162,20 +243,19 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           TextField(
+                            controller: passwordConfirmController,
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            cursorColor: Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Colors.black),
+                            cursorColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Confirm Password",
                               hintStyle: TextStyle(color: Colors.grey[400]),
                             ),
                           ),
-                          PasswordField(),
-                          PasswordField(),
                         ],
                       ),
                     ),
@@ -187,7 +267,36 @@ class _SignupPageState extends State<SignupPage> {
           SizedBox(
             height: 30,
           ),
-          SignupButton(),
+          FadeAnimation(
+            0.5,
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(143, 148, 251, 1),
+                    Color.fromRGBO(143, 148, 251, .6),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(100.0),
+              ),
+              height: 50,
+              width: 100,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent),
+                onPressed: () {signUserUp();},
+                child: Center(
+                  child: Text(
+                    "SignUp",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

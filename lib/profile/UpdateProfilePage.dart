@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-class UpdateProfilePage extends StatelessWidget {
+class UpdateProfilePage extends StatefulWidget {
 
 
   const UpdateProfilePage({Key? key}) : super(key: key);
 
   @override
+  State<UpdateProfilePage> createState() => _UpdateProfilePageState();
+}
+
+class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  @override
   Widget build(BuildContext context) {
     const placeholderText = "Placeholder";
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
     const tFormHeight = 30.0;
-    final controller = null; //TODO : TEXT CONTROLLERS FOR SUBMITTING UPDATED DATA
+
+    //TODO : SETUP INPUT FOR SUBMITTING UPDATED DATA
+    // Dropdowns
+    const List<String> kelamin = <String>['Laki-laki', 'Perempuan', 'Tidak ingin menyebutkan'];
+    const List<String> role = <String>['Penghuni', 'Pemilik'];
+    // Date
+    DateTime lahir = DateTime.now();
+    // Text Controllers
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController namaController = TextEditingController();
+    final TextEditingController Controller = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.chevron_left)),
@@ -52,28 +69,26 @@ class UpdateProfilePage extends StatelessWidget {
                   children: [
                     TextFormField(
                       decoration: const InputDecoration(
-                          label: Text(placeholderText), prefixIcon: Icon(Icons.account_circle)),
+                          label: Text("Email"), prefixIcon: Icon(Icons.account_circle)),
+                      controller: emailController,
                     ),
                     const SizedBox(height: tFormHeight - 20),
                     TextFormField(
                       decoration: const InputDecoration(
-                          label: Text(placeholderText), prefixIcon: Icon(Icons.email)),
+                          label: Text("Nama Lengkap"), prefixIcon: Icon(Icons.email)),
+                      controller: namaController,
                     ),
                     const SizedBox(height: tFormHeight - 20),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          label: Text(placeholderText), prefixIcon: Icon(Icons.phone)),
-                    ),
                     const SizedBox(height: tFormHeight - 20),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        label: const Text(placeholderText),
-                        prefixIcon: const Icon(Icons.fingerprint),
-                        suffixIcon:
-                        IconButton(icon: const Icon(Icons.place), onPressed: () {}),
-                      ),
-                    ),
+                    // TextFormField(
+                    //   obscureText: true,
+                    //   decoration: InputDecoration(
+                    //     label: const Text(placeholderText),
+                    //     prefixIcon: const Icon(Icons.fingerprint),
+                    //     suffixIcon:
+                    //     IconButton(icon: const Icon(Icons.place), onPressed: () {}),
+                    //   ),
+
                     const SizedBox(height: tFormHeight),
 
                     // -- Form Submit Button

@@ -4,6 +4,9 @@ import './passwordField.dart';
 import '../Animation/FadeAnimation.dart';
 
 class VerificationFields extends StatelessWidget {
+  final TextEditingController emailController;
+
+  const VerificationFields({super.key, required this.emailController});
   @override
   Widget build(BuildContext context) {
     return FadeAnimation(
@@ -33,6 +36,7 @@ class VerificationFields extends StatelessWidget {
                 ),
               ),
               child: TextField(
+                controller: emailController,
                 cursorColor: Colors.purpleAccent,
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
@@ -42,10 +46,7 @@ class VerificationFields extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: PasswordField(),
-            )
+
           ],
         ),
       ),

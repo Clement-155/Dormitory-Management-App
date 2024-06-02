@@ -3,40 +3,11 @@ import 'package:flutter/material.dart';
 import '../Animation/FadeAnimation.dart';
 
 class LoginButton extends StatelessWidget {
+  final Function onPress;
+
+  const LoginButton({super.key, required this.onPress});
   @override
   Widget build(BuildContext context) {
-    return FadeAnimation(
-      0.5,
-      Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromRGBO(143, 148, 251, 1),
-              Color.fromRGBO(143, 148, 251, .6),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        height: 50,
-        width: 100,
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent),
-            onPressed: () {},
-              child: Center(
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-          ),
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }

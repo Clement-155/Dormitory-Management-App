@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCfKGAoV6ENp_aalG2Kx0953R7lmA9vwYU',
-    appId: '1:482150639136:android:433cacf0d20edfca887e45',
+    appId: '1:482150639136:android:0251937dfd3a9528887e45',
     messagingSenderId: '482150639136',
     projectId: 'alpha-test-proj',
     storageBucket: 'alpha-test-proj.appspot.com',
@@ -60,30 +60,29 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDgyV4K6dWG0QUDwgRf4M6XnMckmdngeDI',
-    appId: '1:482150639136:ios:71312239160123a7887e45',
+    appId: '1:482150639136:ios:e4c0aceeea62f8f0887e45',
     messagingSenderId: '482150639136',
     projectId: 'alpha-test-proj',
     storageBucket: 'alpha-test-proj.appspot.com',
-    iosBundleId: 'com.example.firebaseTest',
+    iosBundleId: 'com.example.fpGolekost',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDgyV4K6dWG0QUDwgRf4M6XnMckmdngeDI',
-    appId: '1:482150639136:ios:71312239160123a7887e45',
+    appId: '1:482150639136:ios:e4c0aceeea62f8f0887e45',
     messagingSenderId: '482150639136',
     projectId: 'alpha-test-proj',
     storageBucket: 'alpha-test-proj.appspot.com',
-    iosBundleId: 'com.example.firebaseTest',
+    iosBundleId: 'com.example.fpGolekost',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyB7PXuK-lgHF7MgJeoWYPuQ-2-pnRSvu0w',
-    appId: '1:482150639136:web:88aeb50dca23a946887e45',
+    appId: '1:482150639136:web:5ae9027e99c83033887e45',
     messagingSenderId: '482150639136',
     projectId: 'alpha-test-proj',
     authDomain: 'alpha-test-proj.firebaseapp.com',
     storageBucket: 'alpha-test-proj.appspot.com',
-    measurementId: 'G-2VBQGQ7B7X',
+    measurementId: 'G-3ZMD7NYS8T',
   );
-
 }

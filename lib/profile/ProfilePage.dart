@@ -1,10 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_golekost/profile/UpdateProfilePage.dart';
 import 'ProfileMenu.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  ProfilePage({Key? key}) : super(key: key);
+  final user = FirebaseAuth.instance.currentUser!;
 
+  // sign user out method
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
   @override
   Widget build(BuildContext context) {
     const tProfile = "Profile";
@@ -83,8 +89,7 @@ class ProfilePage extends StatelessWidget {
                   icon: Icons.logout,
                   textColor: Colors.red,
                   endIcon: false,
-                  onPress: () {//TODO : LOGOUT METHOD
-                  }),
+                  onPress: signUserOut),
             ],
           ),
         ),
