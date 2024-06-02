@@ -11,22 +11,22 @@ class SignupPage extends StatefulWidget {
   @override
 
 
-  List<DropdownMenuItem<int>> get genderList {
-    List<DropdownMenuItem<int>> menuItems = [
-      DropdownMenuItem(child: Text("Laki-laki"), value: 0),
-      DropdownMenuItem(child: Text("Perempuan"), value: 1),
-      DropdownMenuItem(child: Text("Tidak ingin menyebutkan"), value: 2),
-    ];
-    return menuItems;
-  }
+    List<DropdownMenuItem<int>> get genderList {
+      List<DropdownMenuItem<int>> menuItems = [
+        DropdownMenuItem(child: Text("Laki-laki"), value: 0),
+        DropdownMenuItem(child: Text("Perempuan"), value: 1),
+        DropdownMenuItem(child: Text("Tidak ingin menyebutkan"), value: 2),
+      ];
+      return menuItems;
+    }
 
-  List<DropdownMenuItem<int>> get roleList {
-    List<DropdownMenuItem<int>> menuItems = [
-      DropdownMenuItem(child: Text("Penghuni Kost"), value: 0),
-      DropdownMenuItem(child: Text("Pemilik Kost"), value: 1),
-    ];
-    return menuItems;
-  }
+    List<DropdownMenuItem<int>> get roleList {
+      List<DropdownMenuItem<int>> menuItems = [
+        DropdownMenuItem(child: Text("Penghuni Kost"), value: 0),
+        DropdownMenuItem(child: Text("Pemilik Kost"), value: 1),
+      ];
+      return menuItems;
+    }
 
 
   _SignupPageState createState() => _SignupPageState();

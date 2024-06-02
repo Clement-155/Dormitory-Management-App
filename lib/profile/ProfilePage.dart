@@ -88,7 +88,7 @@ class ProfilePage extends StatelessWidget {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                      builder: (BuildContext context) => ViewProfilePage(userData: userData,))),
+                      builder: (BuildContext context) => ViewProfilePage())),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColor, side: BorderSide.none, shape: const StadiumBorder()),
                   child: const Text(tViewProfile, style: TextStyle(color: Colors.black)),

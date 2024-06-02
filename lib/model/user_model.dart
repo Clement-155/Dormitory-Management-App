@@ -6,7 +6,7 @@ class UserModel {
   final String tanggal_lahir;
   final int jenis_kelamin; //0 = Laki2, 1 = Perempuan, 2 = Tidak ingin menyebutkan
   final String no_hp;
-  final String tanggal_masuk_kost; // Update saat join kost, default = '1925-01-01 00-00:00.000'
+  final String tanggal_masuk_kost; // Update saat join kost, default = '' (Belum join kost)
   final int role; //0 = Penghuni atau 1 = pemilik. Dibuat int seandainya butuh role lain
   final int status; //-1 = pemilik, 0 = Bukan anggota kost, 1 = belum bayar, 2 = sudah bayar, 3 = telat bayar
 
@@ -20,7 +20,7 @@ class UserModel {
       'tanggal_lahir': this.tanggal_lahir,
       'jenis_kelamin': this.jenis_kelamin,
       'no_hp': this.no_hp,
-      'tanggal_masuk_kost': this.tanggal_masuk_kost ?? '1925-01-01 00-00:00.000',
+      'tanggal_masuk_kost': this.tanggal_masuk_kost ?? "",
       'role': this.role,
       'status': this.role == 1 ? -1 : 0
     };
