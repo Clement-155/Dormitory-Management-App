@@ -150,21 +150,6 @@ class ViewProfilePage extends StatelessWidget {
 
                     const SizedBox(height: tFormHeight),
 
-                    // -- Form Submit Button
-                    //TODO : Add account deletion confirmation by prompting user to submit their name.
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                          builder: (BuildContext context) => ViewProfilePage())),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            side: BorderSide.none,
-                            shape: const StadiumBorder()),
-                        child: const Text("Delete Account", style: TextStyle(color: Colors.white)),
-                      ),
-                    ),
-                    const SizedBox(height: tFormHeight),
 
                     // -- Created Date and Delete Button
 
