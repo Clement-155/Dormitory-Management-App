@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_golekost/profile/UpdateProfilePage.dart';
+import 'package:fp_golekost/service/admin_service.dart';
 import 'package:fp_golekost/service/resident_service.dart';
 import 'ProfileMenu.dart';
 import 'ViewProfilePage.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({Key? key}) : super(key: key);
+  final bool isResident;
+  ProfilePage({Key? key, required this.isResident}) : super(key: key);
   final user = FirebaseAuth.instance.currentUser!;
 
   // sign user out method
@@ -16,11 +18,13 @@ class ProfilePage extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
+
     String tProfile = "Profile";
     String tProfileHeading = "ProfileH";
     String tProfileSubHeading = "ProfileSH";
     const String tViewProfile = "View Profile";
-    final userData = ResidentService().getUser(user.email!);
+    final service = isResident ? ResidentService() : AdminService();
+    final userData = service.getUser(user.email!);
 
 
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
@@ -72,7 +76,7 @@ class ProfilePage extends StatelessWidget {
                         String,
                         dynamic>;
                     return Column(children: [
-                    Text(data['nama'] ?? tProfileHeading, style: Theme.of(context).textTheme.headlineLarge),
+                    Text(data['name'] ?? tProfileHeading, style: Theme.of(context).textTheme.headlineLarge),
                   Text(data['email'] ?? tProfileSubHeading, style: Theme.of(context).textTheme.bodyMedium),
                   ]);
                   }

@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
     // Account existance validation
     if(_residentLogin){
       ResidentService rService = ResidentService();
-      if(!rService.exists(emailController.text)){
+      if(!await rService.exists(emailController.text)){
         Navigator.pop(context);
 
         genericErrorMessage("Invalid email or password!");
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     else{
       AdminService aService = AdminService();
-      if(!aService.exists(emailController.text)){
+      if(! await aService.exists(emailController.text)){
         Navigator.pop(context);
 
         genericErrorMessage("Invalid email or password!");

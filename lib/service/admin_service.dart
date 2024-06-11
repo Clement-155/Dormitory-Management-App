@@ -1,13 +1,16 @@
+import 'package:fp_golekost/service/UserServiceInterface.dart';
+
 import '../model/admin_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AdminService {
+class AdminService implements UserServiceInterface {
   // Note collection
   final CollectionReference admins = FirebaseFirestore.instance.collection('admin');
 
   // CREATE
-  Future<void> addUser(AdminModel admin) {
-    return admins.add(admin.mapModel());
+  @override
+  Future<void> addUser(covariant AdminModel user) {
+    return admins.add(user.mapModel());
   }
   // READ
 
@@ -17,6 +20,7 @@ class AdminService {
   //   return notesStream;
   // }
 
+  @override
   Stream<QuerySnapshot> getUser(String email) {
     //TODO : Check if requested email exists
     final residentData = admins.where("email", isEqualTo: email).limit(1).snapshots();
@@ -24,23 +28,25 @@ class AdminService {
   }
 
   // UPDATE
-  Future<void> updateUser(String docID, AdminModel admin){
-    return admins.doc(docID).update(admin.mapModel());
+  @override
+  Future<void> updateUser(String docID, covariant AdminModel user){
+    return admins.doc(docID).update(user.mapModel());
   }
 
   // DELETE
+  @override
   Future<void> deleteUser(String docID){
     return admins.doc(docID).delete();
   }
 
-  bool exists(String email){
+  @override
+  Future<bool> exists (String email) async {
     bool exist = false;
-    final adminsData = admins.where("email", isEqualTo: email).limit(1).get().then(
+    final adminsData = await admins.where("email", isEqualTo: email).limit(1).get().then(
             (doc) {
           exist = doc.docs.isEmpty;
         }
     );
-
     return !exist;
 
   }
