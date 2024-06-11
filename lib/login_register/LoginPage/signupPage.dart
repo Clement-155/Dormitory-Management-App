@@ -66,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
         Navigator.pop(context);
         // If sign up succeed, create new user entry
         if(selectedRole == 0){
-          ResidentModel newUser = ResidentModel(emailController.text, namaController.text,  "Isi nomor HP", DateTime(1900).toString(), selectedRole ?? 0, _placeholderPhoto);
+          ResidentModel newUser = ResidentModel(emailController.text, namaController.text,  "Isi nomor HP", DateTime(1900).toString(), selectedRole ?? 0, _placeholderPhoto, "");
 
           ResidentService().addUser(newUser);
         }
@@ -118,8 +118,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(30.0),
+    return Container(
       child: Column(
         children: <Widget>[
           Container(
@@ -177,22 +176,25 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
 
-                          DropdownButtonFormField(
-                            autovalidateMode: AutovalidateMode.always,
-                            dropdownColor: Colors.white70,
-                            style: TextStyle(color: Colors.black),
-                            hint: const Text("Apakah anda penghuni atau pemilik kost?"),
-                            items: widget.roleList,
-                            onChanged: (int? value) {
-                              selectedRole = value;
-                              setState(() {});
-                            },
-                            value: 0,
-                            validator: (int? value) {
-                              return value == null
-                                  ? "Pilih role"
-                                  : null;
-                            },
+                          Container(
+                            width: double.maxFinite,
+                            child: DropdownButtonFormField(
+                              autovalidateMode: AutovalidateMode.always,
+                              dropdownColor: Colors.white,
+                              style: TextStyle(color: Colors.black),
+                              hint: const Text("Apakah anda penghuni atau pemilik kost?"),
+                              items: widget.roleList,
+                              onChanged: (int? value) {
+                                selectedRole = value;
+                                setState(() {});
+                              },
+                              value: 0,
+                              validator: (int? value) {
+                                return value == null
+                                    ? "Pilih role"
+                                    : null;
+                              },
+                            ),
                           ),
                           TextField(
                             controller: passwordController,

@@ -68,7 +68,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 hpController.text == '' ? oldUser.phone : hpController.text,
                 oldUser.tgl_masuk,
                 oldUser.status_pembayaran,
-                _placeholderPhoto)
+                _placeholderPhoto, oldUser.room_id)
             : AdminModel(
                 oldUser.email,
                 namaController.text == '' ? oldUser.name : namaController.text,
@@ -220,7 +220,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   data['phone'],
                                   data['tgl_masuk'],
                                   data['status_pembayaran'],
-                                  _placeholderPhoto)
+                                  _placeholderPhoto,
+                                  data['room_id']
+                          )
                               : AdminModel(data['email'], data['name'],
                                   data['phone'], _placeholderPhoto);
                           // display as list
