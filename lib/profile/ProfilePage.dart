@@ -61,7 +61,7 @@ class ProfilePage extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.edit, color: Colors.black, size: 20),
                         onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                            builder: (BuildContext context) => UpdateProfilePage()))
+                            builder: (BuildContext context) => UpdateProfilePage(isResident: isResident,)))
                       ),
                     ),
                   ),
@@ -92,7 +92,7 @@ class ProfilePage extends StatelessWidget {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute (
-                      builder: (BuildContext context) => ViewProfilePage())),
+                      builder: (BuildContext context) => ViewProfilePage(isResident: isResident,))),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColor, side: BorderSide.none, shape: const StadiumBorder()),
                   child: const Text(tViewProfile, style: TextStyle(color: Colors.black)),

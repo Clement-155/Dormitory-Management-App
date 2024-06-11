@@ -7,15 +7,13 @@ import 'package:fp_golekost/service/resident_service.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
-
+// Roundabout way to use async function in the main streambuilder : https://stackoverflow.com/questions/63535014/how-to-use-a-future-in-a-streambuilder-in-flutter
   Stream<int> getRole (String email) async* {
 
     if(await ResidentService().exists(email ?? "test@test.com")){
-      print("Resident");
       yield 0;
     }
     else if(await AdminService().exists(email ?? "test2@test.com")){
-      print("Admin");
       yield 1;
     }
     else{
@@ -38,11 +36,9 @@ class AuthPage extends StatelessWidget {
               stream: getRole(snapshot.data?.email ?? "test@test.com"),
               builder: (context, snapshot){
                 if(snapshot.data == 0){
-                print("Resident");
                 return ProfilePage(isResident: true,);
                 }
                 else if(snapshot.data == 1){
-                print("Admin");
                 return ProfilePage(isResident: false,);
                 }
                 else{

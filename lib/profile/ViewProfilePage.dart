@@ -5,7 +5,10 @@ import 'package:fp_golekost/model/resident_model.dart';
 import 'package:fp_golekost/service/resident_service.dart';
 import 'package:intl/intl.dart';
 
+import '../service/admin_service.dart';
+
 class ViewProfilePage extends StatelessWidget {
+  final bool isResident;
   final user = FirebaseAuth.instance.currentUser!;
 
   Map<int, String> role = {
@@ -21,12 +24,12 @@ class ViewProfilePage extends StatelessWidget {
     3: "Telat membayar"
   };
 
-  ViewProfilePage({Key? key}) : super(key: key);
+  ViewProfilePage({Key? key, required this.isResident}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    final Stream<QuerySnapshot>  userData = ResidentService().getUser(user.email!);
+    final service = isResident ? ResidentService() : AdminService();
+    final userData = service.getUser(user.email!);
     const placeholderText = "Placeholder";
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
     const tFormHeight = 30.0;
@@ -82,7 +85,7 @@ class ViewProfilePage extends StatelessWidget {
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(data['nama']), prefixIcon: Icon(Icons.account_circle), prefixText: "Nama Lengkap"),
+                                  label: Text(data['name']), prefixIcon: Icon(Icons.account_circle), prefixText: "Nama Lengkap"),
                             ),
                             const SizedBox(height: tFormHeight - 20),
                             TextField(
@@ -94,26 +97,27 @@ class ViewProfilePage extends StatelessWidget {
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(data['no_hp']), prefixIcon: Icon(Icons.phone), prefixText: "Nomor HP"),
+                                  label: Text(data['phone']), prefixIcon: Icon(Icons.phone), prefixText: "Nomor HP"),
                             ),
                             const SizedBox(height: tFormHeight - 20),
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(role[0]!), prefixIcon: Icon(Icons.account_box), prefixText: "Jenis Akun"),
+                                  label: Text(role[isResident ? 0 : 1]!), prefixIcon: Icon(Icons.account_box), prefixText: "Jenis Akun"),
                             ),
+
                             const SizedBox(height: tFormHeight - 20),
-                            TextField(
+                            isResident ? TextField(
                               readOnly: true,
                               decoration: InputDecoration(
                                   label: Text(status[data['status_pembayaran']]!), prefixIcon: Icon(Icons.payments), prefixText: "Status pembayaran kost (bulan ini)"),
-                            ),
+                            ) : const SizedBox(height: 5),
                             const SizedBox(height: tFormHeight - 20),
-                            TextField(
+                            isResident ? TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(data['tgl_masuk'] == '' ? "Belum masuk kost" : DateFormat.yMd().format(DateTime.parse(data['tanggal_masuk_kost']).toLocal())), prefixIcon: Icon(Icons.calendar_month), prefixText: "Tanggal Mulai Sewa Kost (Saat Ini)"),
-                            ),
+                                  label: Text(data['tgl_masuk'] == '' ? "Belum masuk kost" : DateFormat.yMd().format(DateTime.parse(data['tgl_masuk']).toLocal())), prefixIcon: Icon(Icons.calendar_month), prefixText: "Tanggal Mulai Sewa Kost (Saat Ini)"),
+                            ) : const SizedBox(height: 5),
                             // TextField(
                             //   obscureText: true,
                             //   decoration: InputDecoration(
@@ -127,7 +131,7 @@ class ViewProfilePage extends StatelessWidget {
                         );
                       }
                       else {
-                        return const Text("No Notes");
+                        return const Text("");
                       }
                     }),
 

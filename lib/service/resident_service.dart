@@ -44,11 +44,9 @@ class ResidentService implements UserServiceInterface {
     bool exist = false;
     final residentData = await residents.where("email", isEqualTo: email).limit(1).get().then(
         (doc) {
-          print(doc.docs.isEmpty);
           exist = doc.docs.isEmpty;
         }
     );
-    print(!exist);
     return !exist;
 
   }
