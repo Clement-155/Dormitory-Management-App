@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fp_golekost/login_register/LoginPage/passwordField.dart';
 import 'package:fp_golekost/navigation/nav_drawer.dart';
+import 'package:fp_golekost/service/admin_service.dart';
+import 'package:fp_golekost/service/resident_service.dart';
+import 'package:fp_golekost/service/validationService.dart';
 import './verificationFields.dart';
 import './loginButton.dart';
 import './signupPage.dart';
 import './loginDecoration.dart';
 import '../Animation/FadeAnimation.dart';
-import '../../service/payment_service.dart';
+
 
 class LoginPage extends StatefulWidget {
 
@@ -17,6 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _residentLogin = true; // To set which collection to check if a valid account exists or not
   bool _pageLogin = true;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -30,11 +34,17 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
   }
+  void _toggleRole(bool _switchme) {
+    setState(
+          () {
+        _residentLogin = _switchme;
+      },
+    );
+  }
 
   // sign user in method
   Future<void> signUserIn() async {
     // Loading Indicator
-    print(emailController.text);
     showDialog(
         context: context,
         builder: (context) {
@@ -42,8 +52,35 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
+    // TODO : No delay means attacker knows this isn't from firebase
+    // Field validation
+    if(!ValidationService().isEmail(emailController.text)){
+      Navigator.pop(context);
+      genericErrorMessage("Invalid email or password!");
+      return;
+    }
+    // Account existance validation
+    if(_residentLogin){
+      ResidentService rService = ResidentService();
+      if(!rService.exists(emailController.text)){
+        Navigator.pop(context);
 
-    // Sign in validation
+        genericErrorMessage("Invalid email or password!");
+        return;
+      }
+    }
+    else{
+      AdminService aService = AdminService();
+      if(!aService.exists(emailController.text)){
+        Navigator.pop(context);
+
+        genericErrorMessage("Invalid email or password!");
+        return;
+      }
+    }
+
+    // Firebase Auth Validation
+
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
@@ -93,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    PaymentService service = PaymentService();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -158,6 +194,50 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.all(30.0),
                       child: Column(
                         children: <Widget>[
+                          FadeAnimation(
+                            0.5,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: _residentLogin
+                                        ? Color.fromRGBO(143, 148, 251, 1)
+                                        : Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    "Resident",
+                                    style: TextStyle(
+                                      color: _residentLogin
+                                          ? Colors.white
+                                          : Color.fromRGBO(143, 148, 251, 1),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _toggleRole(true);
+                                  },
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: !_residentLogin
+                                        ? Color.fromRGBO(143, 148, 251, 1)
+                                        : Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    "Admin",
+                                    style: TextStyle(
+                                      color: _residentLogin
+                                          ? Color.fromRGBO(143, 148, 251, 1)
+                                          : Colors.white,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _toggleRole(false);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                           VerificationFields(
                             emailController: emailController,
                           ),

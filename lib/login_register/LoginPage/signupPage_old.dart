@@ -1,8 +1,6 @@
-import 'package:fp_golekost/model/admin_model.dart';
 import 'package:fp_golekost/model/resident_model.dart';
 
 import 'package:flutter/material.dart';
-import 'package:fp_golekost/service/admin_service.dart';
 import '../Animation/FadeAnimation.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +9,16 @@ import 'package:fp_golekost/service/resident_service.dart';
 
 class SignupPage extends StatefulWidget {
   @override
+
+
+    List<DropdownMenuItem<int>> get genderList {
+      List<DropdownMenuItem<int>> menuItems = [
+        DropdownMenuItem(child: Text("Laki-laki"), value: 0),
+        DropdownMenuItem(child: Text("Perempuan"), value: 1),
+        DropdownMenuItem(child: Text("Tidak ingin menyebutkan"), value: 2),
+      ];
+      return menuItems;
+    }
 
     List<DropdownMenuItem<int>> get roleList {
       List<DropdownMenuItem<int>> menuItems = [
@@ -25,13 +33,48 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final String _placeholderPhoto = "placeholder_folder/placeholder.jpg";
+  late DateTime selectedDate = DateTime(1900);
+  int? selectedGender = 0;
   int? selectedRole = 0;
   // text editing controllers
   final emailController = TextEditingController();
   final namaController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
+  final dateController = TextEditingController();
+
+  _selectDate(BuildContext context) async {
+    DateTime? newSelectedDate = await showDatePicker(
+        context: context,
+        // Umur minimal 18 tahun
+        initialDate:
+            DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day),
+        firstDate: DateTime(1930),
+        lastDate: DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Theme.of(context).colorScheme.onPrimary,
+                onPrimary: Colors.white,
+                surface: Colors.white70,
+                onSurface: Theme.of(context).colorScheme.onSecondary,
+              ),
+              dialogBackgroundColor: Colors.blue[500],
+            ),
+            child: child ?? SizedBox(),
+          );
+        });
+
+    if (newSelectedDate != null) {
+      selectedDate = newSelectedDate;
+      dateController
+        ..text = DateFormat.yMMMd().format(selectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: dateController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
 
   Future<void> signUserUp() async {
     // Loading Indicator
@@ -53,10 +96,11 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.pop(context);
       genericErrorMessage("Please fill the name field!");
     }
-
+    //TODO : Validation untuk tanggal dan gender, walau user tidak bisa pilih selain pilihan, mungkin bisa jadi vulnerability
     else {
       // Sign in validation
       try {
+        //TODO : Figure out how to handle both auth and database exception so firebaseauth account is deleted if user data encounters exception
         final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
@@ -65,16 +109,8 @@ class _SignupPageState extends State<SignupPage> {
         // Pop loading indicator if success
         Navigator.pop(context);
         // If sign up succeed, create new user entry
-        if(selectedRole == 0){
-          ResidentModel newUser = ResidentModel(emailController.text, namaController.text,  "Isi nomor HP", DateTime(1900).toString(), selectedRole ?? 0, _placeholderPhoto);
-
-          ResidentService().addUser(newUser);
-        }
-        else if(selectedRole == 1){
-          AdminModel newUser = AdminModel(emailController.text, namaController.text,  "Isi nomor HP", _placeholderPhoto);
-          AdminService().addUser(newUser);
-        }
-
+        ResidentModel newUser = ResidentModel(emailController.text, namaController.text, selectedDate.toString(), selectedGender ?? 2, "Isi nomor HP", DateTime(1900).toString(), selectedRole ?? 0, 0);
+        ResidentService().addUser(newUser);
       
       } on FirebaseAuthException catch (e) {
         // Pop loading indicator before displaying error
@@ -177,6 +213,39 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
 
+
+                          TextField(
+                              style: TextStyle(color: Colors.black),
+                              focusNode: AlwaysDisabledFocusNode(),
+                              controller: dateController,
+                              //editing controller of this TextField
+                              decoration: const InputDecoration(
+                                  icon: Icon(Icons.calendar_today),
+                                  //icon of text field
+                                  labelText: "Enter Date" //label text of field
+                                  ),
+                              readOnly: true,
+                              // when true user cannot edit text
+                              onTap: () async {
+                                _selectDate(context);
+                              }),
+                          DropdownButtonFormField(
+                            autovalidateMode: AutovalidateMode.always,
+                            dropdownColor: Colors.white70,
+                            style: TextStyle(color: Colors.black),
+                            hint: const Text("Pilih jenis kelamin (KTP)"),
+                            items: widget.genderList,
+                            onChanged: (int? value) {
+                              selectedGender = value;
+                              setState(() {});
+                            },
+                            value: 0,
+                            validator: (int? value) {
+                              return value == null
+                                  ? "Pilih jenis kelamin"
+                                  : null;
+                            },
+                          ),
                           DropdownButtonFormField(
                             autovalidateMode: AutovalidateMode.always,
                             dropdownColor: Colors.white70,
@@ -190,7 +259,7 @@ class _SignupPageState extends State<SignupPage> {
                             value: 0,
                             validator: (int? value) {
                               return value == null
-                                  ? "Pilih role"
+                                  ? "Pilih jenis kelamin"
                                   : null;
                             },
                           ),

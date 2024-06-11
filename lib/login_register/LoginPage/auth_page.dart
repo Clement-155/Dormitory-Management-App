@@ -14,7 +14,8 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           // user is logged in
           if (snapshot.hasData) {
-            //TODO : Change to home page
+            //Check if user is admin or resident by querying data from both collection. Assuming a unique email only exists on 1 collection at a time.
+
             return ProfilePage();
           }
 

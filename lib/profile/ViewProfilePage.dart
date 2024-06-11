@@ -1,18 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fp_golekost/model/user_model.dart';
-import 'package:fp_golekost/service/user_service.dart';
+import 'package:fp_golekost/model/resident_model.dart';
+import 'package:fp_golekost/service/resident_service.dart';
 import 'package:intl/intl.dart';
 
 class ViewProfilePage extends StatelessWidget {
   final user = FirebaseAuth.instance.currentUser!;
 
-  Map<int, String> jenis_kelamin = {
-    0: "Laki-laki",
-    1: "Perempuan",
-    2: "Tidak ingin menyebutkan"
-  };
   Map<int, String> role = {
     0: "Penghuni",
     1: "Pemilik",
@@ -31,7 +26,7 @@ class ViewProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final Stream<QuerySnapshot>  userData = UserService().getUser(user.email!);
+    final Stream<QuerySnapshot>  userData = ResidentService().getUser(user.email!);
     const placeholderText = "Placeholder";
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
     const tFormHeight = 30.0;
@@ -105,31 +100,19 @@ class ViewProfilePage extends StatelessWidget {
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(jenis_kelamin[data['jenis_kelamin']]!), prefixIcon: Icon(Icons.person), prefixText: "Jenis Kelamin (KTP)"),
+                                  label: Text(role[0]!), prefixIcon: Icon(Icons.account_box), prefixText: "Jenis Akun"),
                             ),
                             const SizedBox(height: tFormHeight - 20),
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(DateFormat.yMd().format(DateTime.parse(data['tanggal_lahir']).toLocal())), prefixIcon: Icon(Icons.calendar_month), prefixText: "Tanggal Lahir"),
+                                  label: Text(status[data['status_pembayaran']]!), prefixIcon: Icon(Icons.payments), prefixText: "Status pembayaran kost (bulan ini)"),
                             ),
                             const SizedBox(height: tFormHeight - 20),
                             TextField(
                               readOnly: true,
                               decoration: InputDecoration(
-                                  label: Text(role[data['role']]!), prefixIcon: Icon(Icons.account_box), prefixText: "Jenis Akun"),
-                            ),
-                            const SizedBox(height: tFormHeight - 20),
-                            TextField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  label: Text(status[data['status']]!), prefixIcon: Icon(Icons.payments), prefixText: "Status pembayaran kost (bulan ini)"),
-                            ),
-                            const SizedBox(height: tFormHeight - 20),
-                            TextField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  label: Text(data['tanggal_masuk_kost'] == '' ? "Belum masuk kost" : DateFormat.yMd().format(DateTime.parse(data['tanggal_masuk_kost']).toLocal())), prefixIcon: Icon(Icons.calendar_month), prefixText: "Tanggal Mulai Sewa Kost (Saat Ini)"),
+                                  label: Text(data['tgl_masuk'] == '' ? "Belum masuk kost" : DateFormat.yMd().format(DateTime.parse(data['tanggal_masuk_kost']).toLocal())), prefixIcon: Icon(Icons.calendar_month), prefixText: "Tanggal Mulai Sewa Kost (Saat Ini)"),
                             ),
                             // TextField(
                             //   obscureText: true,

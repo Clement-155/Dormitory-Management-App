@@ -1,19 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_golekost/model/user_model.dart';
+import 'package:fp_golekost/model/resident_model.dart';
 import 'package:fp_golekost/profile/ViewProfilePage.dart';
-import 'package:fp_golekost/service/user_service.dart';
+import 'package:fp_golekost/service/resident_service.dart';
 import 'package:intl/intl.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   final user = FirebaseAuth.instance.currentUser!;
 
-  Map<int, String> jenis_kelamin = {
-    0: "Laki-laki",
-    1: "Perempuan",
-    2: "Tidak ingin menyebutkan"
-  };
   Map<int, String> role = {0: "Penghuni", 1: "Pemilik", 2: "Debug"};
   Map<int, String> status = {
     -1: "Tidak ada (Pemilik)",
@@ -22,15 +17,6 @@ class UpdateProfilePage extends StatefulWidget {
     2: "Sudah membayar",
     3: "Telat membayar"
   };
-
-  List<DropdownMenuItem<int>> get genderList {
-    List<DropdownMenuItem<int>> menuItems = [
-      DropdownMenuItem(child: Text("Laki-laki"), value: 0),
-      DropdownMenuItem(child: Text("Perempuan"), value: 1),
-      DropdownMenuItem(child: Text("Tidak ingin menyebutkan"), value: 2),
-    ];
-    return menuItems;
-  }
 
   List<DropdownMenuItem<int>> get roleList {
     List<DropdownMenuItem<int>> menuItems = [
@@ -47,20 +33,19 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  final String _placeholderPhoto = "placeholder_folder/placeholder.jpg";
   //TODO : SETUP INPUT VALIDATION
   late DateTime selectedDate = DateTime(1900);
-  int? selectedGender = 0;
   int? selectedRole = 0;
   String? id;
-  UserModel? oldUser;
+  ResidentModel? oldUser;
 
   // text editing controllers
   final hpController = TextEditingController();
   final namaController = TextEditingController();
-  final dateController = TextEditingController();
 
   //TODO : Validate and send update request
-  Future<void> updateData(UserModel oldUser) async {
+  Future<void> updateData(ResidentModel oldUser) async {
     // Loading Indicator
 
     showDialog(
@@ -71,10 +56,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
           );
         });
     //TODO : Implementasi sanitazion dan validation pakai package khusus (sanitizationChain & validationChain)
-    print(oldUser.no_hp.length );
+    print(oldUser.phone.length );
     // If password confirmation failed
     if (hpController.text.length < 10 && hpController.text.length > 12 &&
-        !(hpController.text.isEmpty && oldUser.no_hp.length > 9)) {
+        !(hpController.text.isEmpty && oldUser.phone.length > 9)) {
       Navigator.pop(context);
       genericErrorMessage("Invalid phone number!");
     }
@@ -82,19 +67,18 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     else {
       // Sign in validation
       try {
-        UserModel newUser = UserModel(
+        ResidentModel newUser = ResidentModel(
             oldUser.email,
-            namaController.text == '' ? oldUser.nama : namaController.text,
-            selectedDate.toString(),
-            selectedGender!,
-            hpController.text == '' ? oldUser.no_hp : hpController.text,
-            oldUser.tanggal_masuk_kost,
-            selectedRole!,
-            oldUser.status);
+            namaController.text == '' ? oldUser.name : namaController.text,
+            hpController.text == '' ? oldUser.phone : hpController.text,
+            oldUser.tgl_masuk,
+            oldUser.status_pembayaran,
+            _placeholderPhoto
+        );
 
         //TODO : Figure out how to handle both auth and database exception so firebaseauth account is deleted if user data encounters exception
         final credential =
-        await UserService().updateUser(id!, newUser);
+        await ResidentService().updateUser(id!, newUser);
         // Pop loading indicator if success
         Navigator.pop(context);
         Navigator.pop(context);
@@ -135,7 +119,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               Navigator.pop(context);
               await widget.user.delete();
               FirebaseAuth.instance.signOut();
-              UserService().deleteUser(id!);
+              ResidentService().deleteUser(id!);
               genericErrorMessage("User deleted");
             }, child: Text("Yes."))
           ],
@@ -164,67 +148,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> userData =
-    UserService().getUser(widget.user.email!);
+    ResidentService().getUser(widget.user.email!);
     const placeholderText = "Placeholder";
     final tPrimaryColor = Theme
         .of(context)
         .colorScheme
         .onPrimary;
     const tFormHeight = 30.0;
-
-
-    _selectDate(BuildContext context) async {
-      DateTime? newSelectedDate = await showDatePicker(
-          context: context,
-          // Umur minimal 18 tahun
-          initialDate: DateTime(DateTime
-              .now()
-              .year - 18, DateTime
-              .now()
-              .month,
-              DateTime
-                  .now()
-                  .day),
-          firstDate: DateTime(1930),
-          lastDate: DateTime(DateTime
-              .now()
-              .year - 18, DateTime
-              .now()
-              .month,
-              DateTime
-                  .now()
-                  .day),
-          builder: (BuildContext context, Widget? child) {
-            return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: ColorScheme.light(
-                  primary: Theme
-                      .of(context)
-                      .colorScheme
-                      .onPrimary,
-                  onPrimary: Colors.white,
-                  surface: Colors.white70,
-                  onSurface: Theme
-                      .of(context)
-                      .colorScheme
-                      .onSecondary,
-                ),
-                dialogBackgroundColor: Colors.blue[500],
-              ),
-              child: child ?? SizedBox(),
-            );
-          });
-
-      if (newSelectedDate != null) {
-        selectedDate = newSelectedDate;
-        dateController
-          ..text = DateFormat.yMMMd().format(selectedDate)
-          ..selection = TextSelection.fromPosition(TextPosition(
-              offset: dateController.text.length,
-              affinity: TextAffinity.upstream));
-      }
-    }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -283,15 +213,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                       Map<String, dynamic> data = snapshot.data!.docs[0]
                           .data() as Map<String, dynamic>;
                       id = snapshot.data!.docs[0].id;
-                      oldUser = UserModel(
+                      oldUser = ResidentModel(
                           data['email'],
-                          data['email'],
-                          data['tanggal_lahir'],
-                          data['jenis_kelamin'],
-                          data['no_hp'],
-                          data['tanggal_masuk_kost'],
-                          data['role'],
-                          data['status']);
+                          data['name'],
+                          data['phone'],
+                          data['tgl_masuk'],
+                          data['status_pembayaran'],
+                          _placeholderPhoto
+                      );
                       // display as list
                       return Column(
                         children: [
@@ -325,38 +254,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                 hintText: "Nomor HP"),
                             keyboardType: TextInputType.phone,
                           ),
-                          const SizedBox(height: tFormHeight - 20),
-                          DropdownButtonFormField(
-                            autovalidateMode: AutovalidateMode.always,
-                            dropdownColor: tPrimaryColor,
-                            style: TextStyle(color: Colors.white),
-                            hint: const Text("Pilih jenis kelamin (KTP)"),
-                            items: widget.genderList,
-                            onChanged: (int? value) {
-                              selectedGender = value;
-                              setState(() {});
-                            },
-                            value: data['jenis_kelamin'] as int,
-                            validator: (int? value) {
-                              return value == null
-                                  ? "Pilih jenis kelamin"
-                                  : null;
-                            },
-                          ),
-                          const SizedBox(height: tFormHeight - 20),
-                          TextField(
-                              focusNode: AlwaysDisabledFocusNode(),
-                              controller: dateController,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                hintText: DateFormat.yMd().format(
-                                    DateTime.parse(
-                                        data['tanggal_lahir'])
-                                        .toLocal()),
-                                prefixIcon: Icon(Icons.calendar_month),),
-                              onTap: () async {
-                                _selectDate(context);
-                              }),
                           const SizedBox(height: tFormHeight - 20),
                           DropdownButtonFormField(
                             autovalidateMode: AutovalidateMode.always,

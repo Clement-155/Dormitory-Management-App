@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_golekost/profile/UpdateProfilePage.dart';
-import 'package:fp_golekost/service/user_service.dart';
+import 'package:fp_golekost/service/resident_service.dart';
 import 'ProfileMenu.dart';
 import 'ViewProfilePage.dart';
 
@@ -20,7 +20,7 @@ class ProfilePage extends StatelessWidget {
     String tProfileHeading = "ProfileH";
     String tProfileSubHeading = "ProfileSH";
     const String tViewProfile = "View Profile";
-    final userData = UserService().getUser(user.email!);
+    final userData = ResidentService().getUser(user.email!);
 
 
     final tPrimaryColor = Theme.of(context).colorScheme.onPrimary;
